@@ -186,4 +186,4 @@ fi
 cd Locker
 npm install
 python setupEnv.py
-node lockerd.js
+#node lockerd.js
