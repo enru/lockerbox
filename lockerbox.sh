@@ -58,8 +58,9 @@ BASEDIR=`pwd`
 
 THIS=`basename $0`
 if [[ $BASEDIR != */lockerbox ]]; then
+    BASEDIR=$BASEDIR/lockerbox
     mkdir -p "$BASEDIR/lockerbox"
-    cd "$BASEDIR/lockerbox"
+    cd $BASEDIR
 fi
 
 export PYEXE=`which python`
@@ -183,4 +184,3 @@ fi
 cd Locker
 npm install
 python setupEnv.py
-#node lockerd.js
