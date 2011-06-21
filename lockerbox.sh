@@ -57,12 +57,9 @@ function download {
 BASEDIR=`pwd`
 
 THIS=`basename $0`
-if [ "$THIS" != "lockerbox.sh" -a "$1" != "lockerbox.sh" ]; then
+if [[ $BASEDIR != */lockerbox ]]; then
     mkdir -p "$BASEDIR/lockerbox"
     cd "$BASEDIR/lockerbox"
-    download "$LOCKERBOX_DOWNLOAD"
-    chmod 755 lockerbox.sh
-    exec ./lockerbox.sh
 fi
 
 export PYEXE=`which python`
