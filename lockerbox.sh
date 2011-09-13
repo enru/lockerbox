@@ -126,7 +126,7 @@ then
     fi
 fi
 
-if ! find "${BASEDIR}/local/bin/activate" >/dev/null 2>&1
+if [ ! -e "${BASEDIR}/local/bin/activate" ]
 then
     check_for virtualenv virtualenv "virtualenv --version" 1.4 optional
 
