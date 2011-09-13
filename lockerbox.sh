@@ -14,21 +14,29 @@ LOCKER_BRANCH='master'
 #### Helper functions
 
 # check_for name exec_name version_command [minimum_version [optional]]
-function check_for {
-    found=`which $2`
-    version=`$3 2>&1 | grep -o -E [-0-9.]\{1,\} | head -n 1`
-    if [ -z "$found" ]; then
+check_for() {
+    found="$(which $2)"
+    version="$($3 2>&1 | grep -o -E [-0-9.]\{1,\} | head -n 1)"
+    if [ -z "${found}" ]
+    then
         echo "$1 not found!" >&2
     else
-        echo "$1 version $version found." >&2
-        if [ -z "$4" ]; then
+        echo "$1 version ${version} found." >&2
+        if [ -z "$4" ]
+        then
             return
         fi
     fi
-    if [ -n "$4" ]; then
-        if [ "$version" \< "$4" ]; then
+
+    if [ -n "$4" ]
+    then
+        result=$(python -c 'print tuple("$version".split(".")) >= tuple("$4".split("."))')
+        if [ "${result}" = "False" ]
+        then
             echo "$1 version $4 or greater required!" >&2
-            if [ -z "$5" ]; then
+
+            if [ -z "$5" ]
+            then
                 exit 1
             else
                 false
