@@ -62,21 +62,22 @@ function download {
 }
 
 #### Main script
-BASEDIR=`pwd`
+THIS="$(basename $0)"
 
-THIS=`basename $0`
-if [[ $BASEDIR != */lockerbox ]]; then
-    BASEDIR=$BASEDIR/lockerbox
-    mkdir -p "$BASEDIR/lockerbox"
-    cd $BASEDIR
+BASEDIR="$(pwd)"
+if [[ ${BASEDIR} != */lockerbox ]]
+then
+    BASEDIR="${BASEDIR}/lockerbox"
+    mkdir -p "${BASEDIR}"
+    cd "${BASEDIR}"
 fi
 
-export PYEXE=`which python`
+PYEXE="$(which python)" ; export PYEXE
 
-export PRE_LOCKERBOX_PATH=$PATH
-export PATH="$BASEDIR/local/bin":$PATH
-export PRE_LOCKERBOX_NODE_PATH=$NODE_PATH
-export NODE_PATH="$BASEDIR/local/lib/node_modules":$NODE_PATH
+PRE_LOCKERBOX_PATH=${PATH} ; export PRE_LOCKERBOX_PATH
+PATH="${BASEDIR}/local/bin":${PATH} ; export PATH
+PRE_LOCKERBOX_NODE_PATH=${NODE_PATH} ; export PRE_LOCKERBOX_NODE_PATH
+NODE_PATH="${BASEDIR}/local/lib/node_modules":${NODE_PATH} ; export NODE_PATH
 
 check_for Git git 'git --version'
 check_for Python python 'python -V' 2.6
