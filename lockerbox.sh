@@ -2,11 +2,11 @@
 
 #### Config
 
-NODE_DOWNLOAD='http://nodejs.org/dist/node-v0.4.8.tar.gz'
+NODE_DOWNLOAD='http://nodejs.org/dist/node-v0.4.11.tar.gz'
 NPM_DOWNLOAD='http://npmjs.org/install.sh'
 VIRTUALENV_DOWNLOAD='http://github.com/pypa/virtualenv/raw/develop/virtualenv.py'
-MONGODB_DOWNLOAD='http://fastdl.mongodb.org/OS/mongodb-OS-ARCH-1.8.1.tgz'
-LOCKERBOX_DOWNLOAD='https://raw.github.com/pib/lockerbox/master/lockerbox.sh'
+MONGODB_DOWNLOAD='http://fastdl.mongodb.org/OS/mongodb-OS-ARCH-2.0.0.tgz'
+LOCKERBOX_DOWNLOAD='https://raw.github.com/othiym23/lockerbox/master/lockerbox.sh'
 
 LOCKER_REPO='https://github.com/LockerProject/Locker.git'
 LOCKER_BRANCH='master'
@@ -85,7 +85,7 @@ check_for Python python 'python -V' 2.6
 mkdir -p local/build
 cd local/build
 
-check_for Node.js node 'node -v' 0.4.6 optional
+check_for Node.js node 'node -v' 0.4.10 optional
 
 if [ $? -ne 0 ]; then
     echo "" >&2
