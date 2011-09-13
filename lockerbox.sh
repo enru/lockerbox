@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o errexit
+
 #### Config
 
 NODE_DOWNLOAD='http://nodejs.org/dist/node-v0.4.11.tar.gz'
