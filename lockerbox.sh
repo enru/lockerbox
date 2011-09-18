@@ -6,6 +6,7 @@ NODE_DOWNLOAD='http://nodejs.org/dist/node-v0.4.11.tar.gz'
 NPM_DOWNLOAD='http://npmjs.org/install.sh'
 VIRTUALENV_DOWNLOAD='http://github.com/pypa/virtualenv/raw/develop/virtualenv.py'
 MONGODB_DOWNLOAD='http://fastdl.mongodb.org/OS/mongodb-OS-ARCH-2.0.0.tgz'
+CLUCENE_REPO='git://clucene.git.sourceforge.net/gitroot/clucene/clucene'
 LOCKERBOX_DOWNLOAD='https://raw.github.com/othiym23/lockerbox/master/lockerbox.sh'
 
 LOCKER_REPO='https://github.com/LockerProject/Locker.git'
@@ -47,6 +48,26 @@ check_for() {
     fi
 }
 
+# check_for_pkg_config name pkg_config_name [minimum_version [optional]]
+check_for_pkg_config() {
+    if ! pkg-config --exists "$2"
+    then
+        echo "$1 not found!" >&2
+        return 1
+    fi
+    version="$(pkg-config --modversion "$2")"
+    echo "$1 version ${version} found." >&2
+
+    [ -z "$3" ] && return 0
+    if pkg-config --atleast-version="$3" "$2"
+    then
+        return 0
+    else
+        echo "$1 version $3 or greater required!" >&2
+        [ -z "$4" ] && exit 1 || return 1
+    fi
+}
+
 download () {
     base="$(basename $1)"
     if [ -f ${base} ]
@@ -80,9 +101,12 @@ PRE_LOCKERBOX_PATH=${PATH} ; export PRE_LOCKERBOX_PATH
 PATH="${BASEDIR}/local/bin":${PATH} ; export PATH
 PRE_LOCKERBOX_NODE_PATH=${NODE_PATH} ; export PRE_LOCKERBOX_NODE_PATH
 NODE_PATH="${BASEDIR}/local/lib/node_modules":${NODE_PATH} ; export NODE_PATH
+PRE_LOCKERBOX_PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ; export PRE_LOCKERBOX_PKG_CONFIG_PATH
+PKG_CONFIG_PATH="${BASEDIR}/local/lib/pkgconfig":${PKG_CONFIG_PATH} ; export PKG_CONFIG_PATH
 
 check_for Git git 'git --version'
 check_for Python python 'python -V' 2.6
+check_for cmake cmake 'cmake --version'
 
 mkdir -p local/build
 cd local/build
@@ -192,6 +216,39 @@ then
     fi
 fi
 
+check_for_pkg_config CLucene libclucene-core 2.3.3.4 optional
+if [ $? -ne 0 ]
+then
+    echo "" >&2
+    echo "About to download, build, and install locally CLucene." >&2
+    echo -n "This could take a while." >&2
+    sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1
+    cd "${BASEDIR}/local/build"
+    base="$(basename "${CLUCENE_REPO}")"
+    if [ -d "${base}" ]
+    then
+        echo "${CLUCENE_REPO} already downloaded." >&2
+    else
+        if git clone "${CLUCENE_REPO}"
+        then
+            echo "Downloaded ${CLUCENE_REPO}." >&2
+        else
+            echo "Download of ${CLUCENE_REPO} failed!" >&2
+            exit 1
+        fi
+    fi
+    if mkdir -p "${base}/build" && cd "${base}/build" &&
+        cmake -D CMAKE_INSTALL_PREFIX:PATH="${BASEDIR}/local" -G "Unix Makefiles" .. &&
+        make &&
+        make install
+    then
+        echo "Installed CLucene into ${BASEDIR}" >&2
+    else
+        echo "Failed to install CLucene into ${BASEDIR}" >&2
+        exit 1
+    fi
+fi
+
 cd "${BASEDIR}"
 
 if [ ! -d Locker/.git ]
@@ -207,5 +264,5 @@ then
 fi
 
 cd Locker
-npm install
+CXXFLAGS="-I${BASEDIR}/local/include" LD_LIBRARY_PATH="${BASEDIR}/local/lib" LIBRARY_PATH="${BASEDIR}/local/lib" npm install
 python setupEnv.py
