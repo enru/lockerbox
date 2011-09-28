@@ -120,7 +120,7 @@ then
     echo -n "This could take a while." >&2
     sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1
     download "${NODE_DOWNLOAD}"
-    if tar zxf "$(basename \"${NODE_DOWNLOAD}\")" &&
+    if tar zxf "$(basename "${NODE_DOWNLOAD}")" &&
         cd $(basename "${NODE_DOWNLOAD}" .tar.gz) &&
         ./configure --prefix="${BASEDIR}/local" &&
         make &&
