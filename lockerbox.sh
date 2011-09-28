@@ -31,7 +31,7 @@ check_for() {
 
     if [ -n "$4" ]
     then
-        result=$(python -c 'print tuple("$version".split(".")) >= tuple("$4".split("."))')
+        result=$(python -c "print tuple(int(x) for x in '$version'.split('.')) >= tuple(int(x) for x in '$4'.split('.'))")
         if [ "${result}" = "False" ]
         then
             echo "$1 version $4 or greater required!" >&2
