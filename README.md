@@ -52,7 +52,7 @@ Just run:
 
 Or if you don't want to download first:
 
-    curl https://raw.github.com/othiym23/lockerbox/master/lockerbox.sh | bash
+    curl https://raw.github.com/LockerProject/lockerbox/master/lockerbox.sh | bash
 
 The second option will create a directory called "lockerbox" and put
 everything there. The first will run in the current directory (which
