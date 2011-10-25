@@ -7,7 +7,7 @@ NPM_DOWNLOAD='http://npmjs.org/install.sh'
 VIRTUALENV_DOWNLOAD='http://github.com/pypa/virtualenv/raw/develop/virtualenv.py'
 MONGODB_DOWNLOAD='http://fastdl.mongodb.org/OS/mongodb-OS-ARCH-2.0.0.tgz'
 CLUCENE_REPO='git://clucene.git.sourceforge.net/gitroot/clucene/clucene'
-LOCKERBOX_DOWNLOAD='https://raw.github.com/othiym23/lockerbox/master/lockerbox.sh'
+LOCKERBOX_DOWNLOAD='https://raw.github.com/LockerProject/lockerbox/master/lockerbox.sh'
 
 LOCKER_REPO='https://github.com/LockerProject/Locker.git'
 LOCKER_BRANCH='master'
