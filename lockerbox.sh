@@ -111,7 +111,7 @@ check_for cmake cmake 'cmake --version'
 mkdir -p local/build
 cd local/build
 
-check_for Node.js node 'node -v' 0.4.9
+check_for Node.js node 'node -v' 0.4.8
 
 if [ $? -ne 0 ]
 then
