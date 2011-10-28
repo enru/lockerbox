@@ -31,7 +31,12 @@ check_for() {
 
     if [ -n "$4" ]
     then
-        result=$(python -c "print tuple(int(x) for x in '$version'.split('.')) >= tuple(int(x) for x in '$4'.split('.'))")
+        if (echo $version|grep -v -E [0-9])
+        then
+            result="False"
+        else
+            result=$(python -c "print tuple(int(x) for x in '$version'.split('.')) >= tuple(int(x) for x in '$4'.split('.'))")
+        fi
         if [ "${result}" = "False" ]
         then
             echo "$1 version $4 or greater required!" >&2
