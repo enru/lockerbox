@@ -31,7 +31,12 @@ check_for() {
 
     if [ -n "$4" ]
     then
-        result=$(python -c "print tuple(int(x) for x in '$version'.split('.')) >= tuple(int(x) for x in '$4'.split('.'))")
+        if (echo $version|grep -v -E [0-9] > /dev/null)
+        then
+            result="False"
+        else
+            result=$(python -c "print tuple(int(x) for x in '$version'.split('.')) >= tuple(int(x) for x in '$4'.split('.'))")
+        fi
         if [ "${result}" = "False" ]
         then
             echo "$1 version $4 or greater required!" >&2
@@ -207,7 +212,7 @@ then
     MONGODB_DOWNLOAD=$(echo ${MONGODB_DOWNLOAD} | sed -e "s/OS/${OS}/g" -e "s/ARCH/${ARCH}/g")
     download "${MONGODB_DOWNLOAD}"
     if tar zxf $(basename "${MONGODB_DOWNLOAD}") &&
-        cp $(basename "${MONGODB_DOWNLOAD}" .tgz) /bin/* "${BASEDIR}/local/bin"
+        cp $(basename "${MONGODB_DOWNLOAD}" .tgz)/bin/* "${BASEDIR}/local/bin"
     then
         echo "Installed local mongoDB." >&2
     else
