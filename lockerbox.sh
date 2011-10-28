@@ -212,7 +212,7 @@ then
     MONGODB_DOWNLOAD=$(echo ${MONGODB_DOWNLOAD} | sed -e "s/OS/${OS}/g" -e "s/ARCH/${ARCH}/g")
     download "${MONGODB_DOWNLOAD}"
     if tar zxf $(basename "${MONGODB_DOWNLOAD}") &&
-        cp $(basename "${MONGODB_DOWNLOAD}" .tgz) /bin/* "${BASEDIR}/local/bin"
+        cp $(basename "${MONGODB_DOWNLOAD}" .tgz)/bin/* "${BASEDIR}/local/bin"
     then
         echo "Installed local mongoDB." >&2
     else
