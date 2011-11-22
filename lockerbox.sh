@@ -116,7 +116,7 @@ check_for cmake cmake 'cmake --version'
 mkdir -p local/build
 cd local/build
 
-check_for Node.js node 'node -v' 0.4.8
+check_for Node.js node 'node -v' 0.4.8 optional
 
 if [ $? -ne 0 ]
 then
@@ -271,3 +271,5 @@ fi
 cd Locker
 CXXFLAGS="-I${BASEDIR}/local/include" LD_LIBRARY_PATH="${BASEDIR}/local/lib" LIBRARY_PATH="${BASEDIR}/local/lib" npm install
 python setupEnv.py
+
+node lockerd.js
