@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 #### Config
 
 NODE_DOWNLOAD='http://nodejs.org/dist/node-v0.4.11.tar.gz'
@@ -22,7 +24,7 @@ check_for() {
     then
         echo "$1 not found!" >&2
     else
-        echo "$1 version ${version} found." >&2
+        echo "$1 version ${version} found."
         if [ -z "$4" ]
         then
             return
@@ -61,7 +63,7 @@ check_for_pkg_config() {
         return 1
     fi
     version="$(pkg-config --modversion "$2")"
-    echo "$1 version ${version} found." >&2
+    echo "$1 version ${version} found."
 
     [ -z "$3" ] && return 0
     if pkg-config --atleast-version="$3" "$2"
@@ -77,11 +79,11 @@ download () {
     base="$(basename $1)"
     if [ -f ${base} ]
     then
-        echo "$1 already downloaded." >&2
+        echo "$1 already downloaded."
     else
         if wget "$1" 2>/dev/null || curl -L -o ${base} "$1"
         then
-            echo "Downloaded $1." >&2
+            echo "Downloaded $1."
         else
             echo "Download of $1 failed!" >&2
             exit 1
@@ -120,9 +122,10 @@ check_for Node.js node 'node -v' 0.4.8 optional
 
 if [ $? -ne 0 ]
 then
-    echo "" >&2
-    echo "About to download, build, and install locally node.js." >&2
-    echo -n "This could take a while." >&2
+    echo ""
+    echo "You don't seem to have node.js installed."
+    echo "I will download, build, and install it locally."
+    echo -n "This could take quite some time!"
     sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1
     download "${NODE_DOWNLOAD}"
     if tar zxf "$(basename "${NODE_DOWNLOAD}")" &&
@@ -131,7 +134,7 @@ then
         make &&
         make install
     then
-        echo "Installed node.js into ${BASEDIR}" >&2
+        echo "Installed node.js into ${BASEDIR}"
     else
         echo "Failed to install node.js into ${BASEDIR}" >&2
         exit 1
@@ -143,12 +146,12 @@ check_for npm npm "npm -v" 1 optional
 
 if [ $? -ne 0 ]
 then
-    echo "" >&2
-    echo "About to download and install locally npm." >&2
+    echo ""
+    echo "About to download and install locally npm."
     download "${NPM_DOWNLOAD}"
     if cat "$(basename ${NPM_DOWNLOAD})" | clean=no sh
     then
-        echo "Installed npm into ${BASEDIR}" >&2
+        echo "Installed npm into ${BASEDIR}"
     else
         echo "Failed to install npm into ${BASEDIR}" >&2
         exit 1
@@ -161,14 +164,14 @@ then
 
     if [ $? -ne 0 ]
     then
-        echo "" >&2
-        echo "About to download virtualenv.py." >&2
+        echo ""
+        echo "About to download virtualenv.py."
         download "${VIRTUALENV_DOWNLOAD}"
     fi
 
     if ${PYEXE} -m virtualenv --no-site-packages "${BASEDIR}/local"
     then
-        echo "Set up virtual Python environment." >&2
+        echo "Set up virtual Python environment."
     else
         echo "Failed to set up virtual Python environment." >&2
     fi
@@ -176,7 +179,7 @@ fi
 
 if . "${BASEDIR}/local/bin/activate"
 then
-    echo "Activated virtual Python environment." >&2
+    echo "Activated virtual Python environment."
 else
     echo "Failed to activate virtual Python environment." >&2
 fi
@@ -207,14 +210,14 @@ then
             ARCH="i686"
         fi
     fi
-    echo "" >&2
-    echo "Downloading and installing locally mongoDB" >&2
+    echo ""
+    echo "Downloading and installing locally mongoDB"
     MONGODB_DOWNLOAD=$(echo ${MONGODB_DOWNLOAD} | sed -e "s/OS/${OS}/g" -e "s/ARCH/${ARCH}/g")
     download "${MONGODB_DOWNLOAD}"
     if tar zxf $(basename "${MONGODB_DOWNLOAD}") &&
         cp $(basename "${MONGODB_DOWNLOAD}" .tgz)/bin/* "${BASEDIR}/local/bin"
     then
-        echo "Installed local mongoDB." >&2
+        echo "Installed local mongoDB."
     else
         echo "Failed to install local mongoDB." >&2
         exit 1
@@ -224,19 +227,19 @@ fi
 check_for_pkg_config CLucene libclucene-core 2.3.3.4 optional
 if [ $? -ne 0 ]
 then
-    echo "" >&2
-    echo "About to download, build, and install locally CLucene." >&2
-    echo -n "This could take a while." >&2
+    echo ""
+    echo "About to download, build, and install locally CLucene."
+    echo -n "This could take a while."
     sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1 ; printf "." ; sleep 1
     cd "${BASEDIR}/local/build"
     base="$(basename "${CLUCENE_REPO}")"
     if [ -d "${base}" ]
     then
-        echo "${CLUCENE_REPO} already downloaded." >&2
+        echo "${CLUCENE_REPO} already downloaded."
     else
         if git clone "${CLUCENE_REPO}"
         then
-            echo "Downloaded ${CLUCENE_REPO}." >&2
+            echo "Downloaded ${CLUCENE_REPO}."
         else
             echo "Download of ${CLUCENE_REPO} failed!" >&2
             exit 1
@@ -247,7 +250,7 @@ then
         make &&
         make install
     then
-        echo "Installed CLucene into ${BASEDIR}" >&2
+        echo "Installed CLucene into ${BASEDIR}"
     else
         echo "Failed to install CLucene into ${BASEDIR}" >&2
         exit 1
@@ -258,10 +261,10 @@ cd "${BASEDIR}"
 
 if [ ! -d Locker/.git ]
 then
-    echo "Checking out Locker repo." >&2
+    echo "Checking out Locker repo."
     if git clone "${LOCKER_REPO}" -b "${LOCKER_BRANCH}"
     then
-        echo "Checked out Locker repo." >&2
+        echo "Checked out Locker repo."
     else
         echo "Failed to check out Locker repo." >&2
         exit 1
@@ -269,10 +272,14 @@ then
 fi
 
 cd Locker
-echo "Checking out submodules">&2
+echo "Checking out submodules"
 git submodule update --init
 
-CXXFLAGS="-I${BASEDIR}/local/include" LD_LIBRARY_PATH="${BASEDIR}/local/lib" LIBRARY_PATH="${BASEDIR}/local/lib" npm install
+CXXFLAGS="-I${BASEDIR}/local/include" \
+    LD_LIBRARY_PATH="${BASEDIR}/local/lib" \
+    LIBRARY_PATH="${BASEDIR}/local/lib" \
+    npm install
+
 if python setupEnv.py; then
     echo "Looks like everything worked!"
 else
