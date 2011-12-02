@@ -269,6 +269,9 @@ then
 fi
 
 cd Locker
+echo "Checking out submodules">&2
+git submodule update --init
+
 CXXFLAGS="-I${BASEDIR}/local/include" LD_LIBRARY_PATH="${BASEDIR}/local/lib" LIBRARY_PATH="${BASEDIR}/local/lib" npm install
 if python setupEnv.py; then
     echo "Looks like everything worked!"
