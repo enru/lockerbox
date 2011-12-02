@@ -272,4 +272,5 @@ cd Locker
 CXXFLAGS="-I${BASEDIR}/local/include" LD_LIBRARY_PATH="${BASEDIR}/local/lib" LIBRARY_PATH="${BASEDIR}/local/lib" npm install
 python setupEnv.py
 
-node lockerd.js
+# This won't work until we have API keys -mdz 2011-12-01
+# node lockerd.js
