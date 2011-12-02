@@ -270,7 +270,11 @@ fi
 
 cd Locker
 CXXFLAGS="-I${BASEDIR}/local/include" LD_LIBRARY_PATH="${BASEDIR}/local/lib" LIBRARY_PATH="${BASEDIR}/local/lib" npm install
-python setupEnv.py
+if python setupEnv.py; then
+    echo "Looks like everything worked!"
+else
+    echo "Something went wrong. :-/"
+fi
 
 # This won't work until we have API keys -mdz 2011-12-01
 # node lockerd.js
