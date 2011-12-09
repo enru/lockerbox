@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 #### Config
 
 NODE_DOWNLOAD='http://nodejs.org/dist/node-v0.4.11.tar.gz'
